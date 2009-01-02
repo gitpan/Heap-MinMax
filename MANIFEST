@@ -1,0 +1,7 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Heap-MinMax.t
+lib/Heap/MinMax.pm
+META.yml                                 Module meta-data (added by MakeMaker)
