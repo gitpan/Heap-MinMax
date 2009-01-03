@@ -5,7 +5,7 @@
 
 # change 'tests => 1' to 'tests => last_test_to_print';
 
-use Test::More tests => 15;
+use Test::More tests => 17;
 BEGIN { use_ok('Heap::MinMax') };
 
 #########################
@@ -35,7 +35,7 @@ is( $min = $mm_heap->min(), 2, 'minimum value is 2' );
 
 
 $mm_heap = Heap::MinMax->new();
-my @vals2 = (19, 14, 15, 17);
+my @vals2 = (19, 16, 17);
 
 eval{
 	$mm_heap->insert(@vals2);
@@ -44,6 +44,17 @@ eval{
 is( $@, '', '$@ is not set after inserting values' );
 
 is( $mm_heap->max(), 20, 'max is 20' );
+
+
+my @vals3 = (20.111111, 20.111112, 20.111113, 15.99999);
+eval{
+	$mm_heap->insert(@vals3);
+};
+is( $@, '', '$@ is not set after inserting values' );
+
+
+is( $mm_heap->min, 15.99999, 'min was 15.99999' );
+
 
 
 my $elt1 = { _name => "Bob",

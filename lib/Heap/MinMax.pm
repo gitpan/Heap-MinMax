@@ -23,7 +23,7 @@ use warnings;
 
 
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 # Preloaded methods go here.
@@ -1033,16 +1033,16 @@ __END__
 
 =head1 NAME
 
-Heap::MinMax - Perl implementation of a Min-Max Heap.
+Heap::MinMax - Perl implementation of a Min-Max Heap
 
 =head1 SYNOPSIS
+
+ use Heap::MinMax;
 
 =head2 EXAMPLE 1
 
   # shows basic (default constructor) behavior of heap.
-  # the default comparison function is numeric.
-
-  use Heap::MinMax;
+  # the default comparison function is floating-point numeric.
 
   my $mm_heap = Heap::MinMax->new();
   my @vals = (2, 1, 3, 7, 9, 5, 8);
@@ -1057,13 +1057,13 @@ Heap::MinMax - Perl implementation of a Min-Max Heap.
   $mm_heap->print_heap();
 
 
-
   my $mm_heap2 = Heap::MinMax->new();
-  my @vals2 = (19, 14, 15, 17);
+  my @vals2 = (19.1111111, 19.111112, 15, 17);
   $mm_heap2->insert(@vals2);
-  $mm_heap2->insert(20);
+  $mm_heap2->insert(19.11110);
   $mm_heap2->print_heap();
-  print $mm_heap2->max() . "\n\n";
+  print $mm_heap2->max() . "\n"; # output 19.111112
+  print $mm_heap2->min() . "\n"; # output 15
 
   exit
 
@@ -1103,16 +1103,19 @@ Heap::MinMax - Perl implementation of a Min-Max Heap.
 
 
 
+
 =head1 DESCRIPTION
 
 An implementation of a Min-Max Heap as described in "Min-Max Heaps
 and Generalized Priority Queues", Atkinson, Sack, Santoro, Strothotte, 1986.
 
-Min-Max heaps allow objects to be stored in a partially-sorted manner such that
+Min-Max heaps allow objects to be stored in a 'dual' partially-sorted manner, such that
 the time it takes to find either the minimum OR maximum element in the set takes
-constant time.
+constant time. This is accomplished through a modification of R.W. Floyd's original
+(standard) heap algorithm that introduces the notion of 'min' (even) levels and 'max' 
+(odd) levels in the binary tree structure of the heap.  
 
-A comparison of worst-case time complexities with regular Min Heaps or Max Heaps is 
+A comparison of worst-case time complexities with regular Min Heaps is 
 as follows:
 
                        Min Heap                     MinMax Heap
@@ -1124,7 +1127,64 @@ DeleteMax             0.5*n+log(n)                   2.5*log(n)
 -----------------------------------------------------------------------------
 
 
-=head2 EXPORT
+
+=head1 METHODS
+
+ new()
+
+MinMax Heap constructor.   Without any arguments, returns a heap that works with 
+floating point numeric values.   You can also supply a comparision function and an
+evaluation function (used for printing).
+
+
+ array()
+
+Access the array that is used by the heap.
+
+
+ build_heap()
+
+Builds a heap from heap object's array.
+
+
+ insert($)
+
+Add a value/object to the heap.
+
+ remove($)
+
+Really expensive arbitrary remove function.   Looks through the array for value/object 
+specified and removes it, then trickles heap-property down from that location.  If you
+are using this function, you are not taking advantage of the power of Heaps.  However, 
+sometimes you gotta do what you gotta do.
+
+ min()
+
+Returns the minimum value/object stored in the heap.
+
+ max()
+
+Returns the maximum value/object stored in the heap.
+
+ pop_min()
+
+Removes and returns the minimum value/object stored in the heap.
+
+ pop_max()
+
+Removes and returns the maximum value/object stored in the heap.
+
+ get_size()
+
+Returns the number of elements currently in the heap.
+
+ print()
+
+Dumps the contents of the heap to STDOUT.
+
+
+
+=head1 EXPORT
 
 None.
 
