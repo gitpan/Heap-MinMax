@@ -17,13 +17,12 @@
 #
 package Heap::MinMax;
 
-use 5.007003;
 use strict;
 use warnings;
 
 
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 # Preloaded methods go here.
@@ -1029,7 +1028,7 @@ sub fp_equal {
 
 1;
 __END__
-# Below is stub documentation for your module. You'd better edit it!
+
 
 =head1 NAME
 
@@ -1115,16 +1114,16 @@ constant time. This is accomplished through a modification of R.W. Floyd's origi
 (standard) heap algorithm that introduces the notion of 'min' (even) levels and 'max' 
 (odd) levels in the binary tree structure of the heap.  
 
-A comparison of worst-case time complexities with regular Min Heaps is 
+A comparison of the time complexities of Min-Max Heaps vs. regular Min Heaps is 
 as follows:
 
-                       Min Heap                     MinMax Heap
------------------------------------------------------------------------------
-Create                2*n                            (7/3)*n
-Insert                log(n+1)                       0.5*log(n+1)
-DeleteMin             2*log(n)                       2.5*log(n)
-DeleteMax             0.5*n+log(n)                   2.5*log(n)
------------------------------------------------------------------------------
+                       Min Heap                     Min-Max Heap
+ -----------------------------------------------------------------------------
+ Create                2*n                            (7/3)*n
+ Insert                log(n+1)                       0.5*log(n+1)
+ DeleteMin             2*log(n)                       2.5*log(n)
+ DeleteMax             0.5*n+log(n)                   2.5*log(n)
+ -----------------------------------------------------------------------------
 
 
 
