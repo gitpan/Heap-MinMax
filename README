@@ -1,4 +1,4 @@
-Heap-MinMax version 0.03
+Heap-MinMax version 0.04
 ========================
 
 This is an implementation of a Min-Max Binary Heap, based on 1986 article
@@ -64,7 +64,19 @@ Strothotte, published in Communications of the ACM in 1986.
   # Example 2
   #
   # shows how you can store any set of comparable objects in heap.
-  #  
+  #
+  #
+  #  Note: in this example, anonymous subroutines are
+  #  passed in to the constructor, but you can just as well supply
+  #  your own object's comparison methods by name-   i.e.,
+  #
+  #  $avltree = Heap::MinMax->new(
+  #          fcompare => \&MyObj::compare,
+  #           
+  #          . . . 
+  #           
+  #          etc...
+  #
   ################################################################
 
   use Heap::MinMax;
@@ -77,10 +89,12 @@ Strothotte, published in Communications of the ACM in 1986.
 	     _phone => "666-6666",}; 
 
   my $mm_heap3 = Heap::MinMax->new(
+
       fcompare => sub{ my ($o1, $o2) = @_;
   		     if($o1->{_name} gt $o2->{_name}){ return 1}
   		     elsif($o1->{_name} lt $o2->{_name}){ return -1}
   		     return 0;},
+
       feval     => sub{ my($obj) = @_;
   		       return $obj->{_name} . ", " . $obj->{_phone};},   
       );

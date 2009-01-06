@@ -22,7 +22,7 @@ use warnings;
 
 
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 
 # Preloaded methods go here.
@@ -1050,9 +1050,9 @@ Heap::MinMax - Perl implementation of a Min-Max Heap
   }
   $mm_heap->print_heap();
   my $min = $mm_heap->pop_min();
-  print "min was: $min\n\n";
+  print "min was: $min\n";
   my $max = $mm_heap->pop_max();
-  print "max was: $max\n\n";
+  print "max was: $max\n";
   $mm_heap->print_heap();
 
 
@@ -1070,6 +1070,19 @@ Heap::MinMax - Perl implementation of a Min-Max Heap
 =head2 EXAMPLE 2
 
   # shows how you can store any set of comparable objects in heap.  
+  #
+  #  Note: in this example, anonymous subroutines are
+  #  passed in to the constructor, but you can just as well supply
+  #  your own object's comparison methods by name-   i.e.,
+  #
+  #  $avltree = Heap::MinMax->new(
+  #          fcompare => \&MyObj::compare,
+  #           
+  #          . . . 
+  #           
+  #          etc...
+  
+
 
   use Heap::MinMax;
 
@@ -1081,18 +1094,22 @@ Heap::MinMax - Perl implementation of a Min-Max Heap
 	     _phone => "666-6666",}; 
 
   my $mm_heap3 = Heap::MinMax->new(
+
       fcompare => sub{ my ($o1, $o2) = @_;
   		     if($o1->{_name} gt $o2->{_name}){ return 1}
   		     elsif($o1->{_name} lt $o2->{_name}){ return -1}
   		     return 0;},
+
       feval     => sub{ my($obj) = @_;
   		       return $obj->{_name} . ", " . $obj->{_phone};},   
+
       );
 
 
   $mm_heap3->insert($elt1);
   $mm_heap3->insert($elt2);
   $mm_heap3->insert($elt3);
+  # ...  etc.
 
   $mm_heap3->print();
 
@@ -1109,10 +1126,10 @@ An implementation of a Min-Max Heap as described in "Min-Max Heaps
 and Generalized Priority Queues", Atkinson, Sack, Santoro, Strothotte, 1986.
 
 Min-Max heaps allow objects to be stored in a 'dual' partially-sorted manner, such that
-the time it takes to find either the minimum OR maximum element in the set takes
+finding both the minimum and the maximum element in the set takes
 constant time. This is accomplished through a modification of R.W. Floyd's original
 (standard) heap algorithm that introduces the notion of 'min' (even) levels and 'max' 
-(odd) levels in the binary tree structure of the heap.  
+(odd) levels in the binary structure of the heap.  
 
 A comparison of the time complexities of Min-Max Heaps vs. regular Min Heaps is 
 as follows:
@@ -1129,57 +1146,118 @@ as follows:
 
 =head1 METHODS
 
- new()
+=head2 new()
+
+ my $mm_heap = Heap::MinMax->new();
 
 MinMax Heap constructor.   Without any arguments, returns a heap that works with 
 floating point numeric values.   You can also supply a comparision function and an
 evaluation function (used for printing).
 
 
- array()
+
+
+=head2  array()
+
+ $my $heaps_array = $mm_heap->array();
 
 Access the array that is used by the heap.
 
 
- build_heap()
+
+
+=head2 build_heap()
+
+ $mm_heap->build_heap();
 
 Builds a heap from heap object's array.
 
 
- insert($)
+
+
+
+=head2  insert()
+ 
+ $mm_heap->insert($thing);
+
+or
+
+ $mm_heap->insert(@things);
 
 Add a value/object to the heap.
 
- remove($)
+
+
+
+=head2  remove()
+
+ my $found_thing = $mm_heap->remove($thing);
 
 Really expensive arbitrary remove function.   Looks through the array for value/object 
 specified and removes it, then trickles heap-property down from that location.  If you
 are using this function, you are not taking advantage of the power of Heaps.  However, 
 sometimes you gotta do what you gotta do.
 
- min()
+
+
+
+
+=head2  min()
+
+ my $min_thing = $mm_heap->min();
 
 Returns the minimum value/object stored in the heap.
 
- max()
+
+
+
+
+=head2  max()
+
+ my $max_thing = $mm_heap->max();
 
 Returns the maximum value/object stored in the heap.
 
- pop_min()
+
+
+
+
+=head2  pop_min()
+
+ my $min_thing = $mm_heap->pop_min();
 
 Removes and returns the minimum value/object stored in the heap.
 
- pop_max()
+
+
+
+
+=head2  pop_max()
+
+ my $min_thing = $mm_heap->pop_max();
 
 Removes and returns the maximum value/object stored in the heap.
 
- get_size()
+
+
+
+
+=head2  get_size()
+
+ my $size = $mm_heap->get_size();
 
 Returns the number of elements currently in the heap.
 
- print()
+
+
+
+
+=head2  print()
+
+ $mm_heap->print();
 
 Dumps the contents of the heap to STDOUT.
+
 
 
 
