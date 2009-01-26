@@ -22,7 +22,7 @@ use warnings;
 
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 # Preloaded methods go here.
@@ -129,6 +129,9 @@ sub remove
     my ($self,
 	$obj) = @_;
     
+
+    my ($pkg, $filename, $line) = caller();
+
     my $array = $self->{_array};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};
@@ -138,6 +141,7 @@ sub remove
 
     my $i = 0;
     foreach my $elt (@$array){
+
 	if($self->{fcompare}->($obj, $elt) == 0){
 	    $index = $i;
 	    last;
@@ -150,8 +154,11 @@ sub remove
 
 	$array->[$index] = $array->[$arr_length-1];    
 	pop(@$array);
-	
+
+
 	$self->trickledown($index);
+
+
 
 	return $obj;
     }
@@ -799,11 +806,12 @@ sub get_largest_descendant_index
 sub default_cmp_func
 {
     my ($obj1, $obj2) = @_;
-    if($obj1 < $obj2){
-	return -1;
-    }
-    if($obj1 == $obj2){
+   
+    if(fp_equal($obj1, $obj2, 10)){
 	return 0;
+    }
+    if($obj1 < $obj2){	
+	return -1;
     }
     return 1;
 }
@@ -1017,7 +1025,7 @@ sub print_heap{
 
 
 sub fp_equal {
-    my ($self, $A, $B, $dp) = @_;
+    my ($A, $B, $dp) = @_;
 
     return sprintf("%.${dp}g", $A) eq sprintf("%.${dp}g", $B);
 }
@@ -1057,7 +1065,7 @@ Heap::MinMax - Perl implementation of a Min-Max Heap
 
 
   my $mm_heap2 = Heap::MinMax->new();
-  my @vals2 = (19.1111111, 19.111112, 15, 17);
+  my @vals2 = (19.111111, 19.111112, 15, 17);
   $mm_heap2->insert(@vals2);
   $mm_heap2->insert(19.11110);
   $mm_heap2->print_heap();
@@ -1125,10 +1133,10 @@ Heap::MinMax - Perl implementation of a Min-Max Heap
 An implementation of a Min-Max Heap as described in "Min-Max Heaps
 and Generalized Priority Queues", Atkinson, Sack, Santoro, Strothotte, 1986.
 
-Min-Max heaps allow objects to be stored in a 'dual' partially-sorted manner, such that
-finding both the minimum and the maximum element in the set takes
-constant time. This is accomplished through a modification of R.W. Floyd's original
-(standard) heap algorithm that introduces the notion of 'min' (even) levels and 'max' 
+Min-Max heaps allow objects to be stored in a 'dual' partially-sorted manner, such 
+that finding both the minimum and the maximum element in the set takes constant 
+time. This is accomplished through a modification of R.W. Floyd's original
+heap algorithm that introduces the notion of 'min' (even) levels and 'max' 
 (odd) levels in the binary structure of the heap.  
 
 A comparison of the time complexities of Min-Max Heaps vs. regular Min Heaps is 
@@ -1150,9 +1158,9 @@ as follows:
 
  my $mm_heap = Heap::MinMax->new();
 
-MinMax Heap constructor.   Without any arguments, returns a heap that works with 
-floating point numeric values.   You can also supply a comparision function and an
-evaluation function (used for printing).
+MinMax Heap constructor.   Without any arguments, returns a heap that works with
+floating-point values.   You can also supply a comparision function and an
+evaluation function (useful for printing).
 
 
 
