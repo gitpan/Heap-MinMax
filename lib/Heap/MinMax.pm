@@ -22,7 +22,7 @@ use warnings;
 
 
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 # Preloaded methods go here.
@@ -37,7 +37,7 @@ sub new {
     my $class   = ref($invocant) || $invocant;
     my $self = {
 
-        _array     => [],   # Array containing heap
+        _arr     => [],   # Array containing heap
 	fcompare   => \&default_cmp_func,
 	feval      => \&default_eval,
 
@@ -56,8 +56,8 @@ sub new {
 sub array
 {
     my $self = shift;
-    if (@_) { $self->{_array} = shift }
-    return $self->{_array};	
+    if (@_) { $self->{_arr} = shift }
+    return $self->{_arr};	
 }
 
 
@@ -79,7 +79,7 @@ sub array
 sub build_heap
 {
     my ($self) = @_;     
-    my $array = $self->{_array};    
+    my $array = $self->{_arr};    
     my $arr_length = @$array;
     my $val;
 
@@ -104,7 +104,7 @@ sub insert
 	@values) = @_;
     
     while(my $val = shift(@values)){	
-	my $array = $self->{_array};	
+	my $array = $self->{_arr};	
 	push(@$array, $val); # put the new element in the next available leaf slot	
 	my $arr_length = @$array;
 	my $index = $arr_length - 1;
@@ -132,7 +132,7 @@ sub remove
 
     my ($pkg, $filename, $line) = caller();
 
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};
     my $value = $evalfunc->($obj);
@@ -175,7 +175,7 @@ sub remove
 sub min
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
 
     #array is empty
@@ -197,7 +197,7 @@ sub min
 sub pop_min
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
 
     #array is empty
@@ -227,7 +227,7 @@ sub pop_min
 sub min_non_zero # the smallest non-zero element
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};    
     my $index = 0;
@@ -274,7 +274,7 @@ sub min_non_zero # the smallest non-zero element
 sub pop_min_non_zero # pop the smallest non-zero element
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};    
     my $index = 0;
@@ -322,7 +322,7 @@ sub pop_min_non_zero # pop the smallest non-zero element
 sub max
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};  
 
@@ -362,7 +362,7 @@ sub max
 sub pop_max
 {
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};  
 
@@ -411,7 +411,7 @@ sub pop_max
 sub trickledown
 {
     my ($self, $i) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
 
     if($i >= @$array){
 	return;
@@ -446,7 +446,7 @@ sub trickledown
 sub trickledown_min
 {
        my ($self, $index) = @_;
-       my $array = $self->{_array};
+       my $array = $self->{_arr};
        my $m = $self->get_smallest_descendant_index($index);
        
        my $level = $self->get_level($index);
@@ -488,7 +488,7 @@ sub trickledown_min
 sub trickledown_max
 {
        my ($self, $index) = @_;
-       my $array = $self->{_array};
+       my $array = $self->{_arr};
        my $m = $self->get_largest_descendant_index($index);
        
        my $level = $self->get_level($index);
@@ -523,7 +523,7 @@ sub trickledown_max
 sub bubble_up
 {
     my ($self, $i) = @_;    
-    my $array = $self->{_array};    
+    my $array = $self->{_arr};    
     
     my $level = $self->get_level($i);
 
@@ -568,7 +568,7 @@ sub bubble_up
 sub bubble_up_min
 {
     my ($self, $i) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     
     if($self->has_grandparent($i)){
 	my $gp_index = $self->grandparent_node_index($i);
@@ -593,7 +593,7 @@ sub bubble_up_min
 sub bubble_up_max
 {
     my ($self, $i) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
         
     if($self->has_grandparent($i)){
 	my $gp_index = $self->grandparent_node_index($i);
@@ -616,7 +616,7 @@ sub swap
 {
     my ($self, $m, $index) = @_;
 
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     
     if($m <  @$array && $index <  @$array){
 	 my $tmp = $array->[$index];
@@ -624,7 +624,7 @@ sub swap
 	 $array->[$m] =  $tmp;
     }
 
-    $self->{_array} = $array;
+    $self->{_arr} = $array;
 }
 
 
@@ -638,7 +638,7 @@ sub swap
 sub get_smallest_descendant_index
 {
     my ($self, $index) = @_;    
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
 
     if($self->has_children($index)){ # if has children
 	my %descendants;
@@ -721,7 +721,7 @@ sub get_smallest_descendant_index
 sub get_largest_descendant_index
 {
     my ($self, $index) = @_;    
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     
     if($self->has_children($index)){ # if has children
 	my %descendants;
@@ -856,7 +856,7 @@ sub right_node
     my ($self, $index) = @_;
 
     my $r_index = $self->right_node_index($index);
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
 
     if($r_index < @$array){ 
 	return $array->[$r_index];	
@@ -876,7 +876,7 @@ sub left_node
 {
     my ($self, $index) = @_;
     my $l_index = $self->left_node_index($index);
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     
     if($l_index < @$array){ 
 	return $array->[$l_index];
@@ -897,7 +897,7 @@ sub parent
 {    
     my ($self,
 	$index) = @_; 
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
 
     if($index == 0){
 	return;
@@ -905,7 +905,7 @@ sub parent
     my $parent_index = $self->parent_node_index($index);
     
     if($parent_index){
-	return $self->{_array}->[$parent_index];
+	return $self->{_arr}->[$parent_index];
     }
     return;
 }
@@ -914,14 +914,14 @@ sub parent
 sub get_size
 {
     my $self = shift;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     return @$array;	
 }
 
 sub is_empty
 {
     my ($self) = @_; 
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     if(@$array == 0){
 	return 1;
     }
@@ -1012,7 +1012,7 @@ sub print{
 
 sub print_heap{
     my ($self) = @_;
-    my $array = $self->{_array};
+    my $array = $self->{_arr};
     my $eval_func = $self->{feval};
 
     my $i = 0;
@@ -1040,7 +1040,7 @@ __END__
 
 =head1 NAME
 
-Heap::MinMax - Perl implementation of a Min-Max Heap
+Heap::MinMax - Min-Max Heap for Priority Queues etc.
 
 =head1 SYNOPSIS
 
@@ -1167,7 +1167,7 @@ evaluation function (useful for printing).
 
 =head2  array()
 
- $my $heaps_array = $mm_heap->array();
+ my $heaps_array = $mm_heap->array();
 
 Access the array that is used by the heap.
 
