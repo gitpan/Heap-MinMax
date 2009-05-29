@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Heap-MinMax
-version:             0.06
+version:             1.01
 abstract:            Min-Max Heap for Priority Queues etc.
 license:             ~
 author:              
@@ -8,6 +8,7 @@ author:
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
+    Test::More:                    0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3

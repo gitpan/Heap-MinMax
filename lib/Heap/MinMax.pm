@@ -17,15 +17,12 @@
 #
 package Heap::MinMax;
 
+use Carp;
 use strict;
 use warnings;
 
 
-
-our $VERSION = '0.06';
-
-
-# Preloaded methods go here.
+our $VERSION = '1.01';
 
 
 
@@ -36,17 +33,13 @@ sub new {
     my $invocant = shift;
     my $class   = ref($invocant) || $invocant;
     my $self = {
-
-        _arr     => [],   # Array containing heap
-	fcompare   => \&default_cmp_func,
-	feval      => \&default_eval,
-
+        _arr      => [],   # Array containing heap
+	fcompare  => \&default_cmp_func,
+	feval     => \&default_eval,
         @_,    # Override previous attributes
     };
     $self = bless $self, $class;
-
     return $self;
-
 }
 
 ##############################################
@@ -61,6 +54,8 @@ sub array
 }
 
 
+
+
 #=========================================================================
 #
 # main heap functions
@@ -68,10 +63,11 @@ sub array
 #=========================================================================
 
 
-
 ##########################################################################
 #
 # build_heap
+# 
+# $mm_heap->build_heap();
 #
 # builds a heap from MinMax object's array
 #
@@ -92,6 +88,9 @@ sub build_heap
 ##########################################################################
 #
 # insert
+#
+# $mm_heap->insert($value);
+# $mm_heap->insert(@values);
 #
 # Insertion works by placing the new node in the first available 
 # leaf position and then calling bubble_up to re-establish min-max 
@@ -117,6 +116,8 @@ sub insert
 #########################################################################
 #
 # remove
+# 
+# $mm_heap->remove($object);
 #
 # Not the same as pop_<min,max>.  really expensive arbitrary remove 
 # operation that iterates over the array and finds the object it needs, 
@@ -155,10 +156,7 @@ sub remove
 	$array->[$index] = $array->[$arr_length-1];    
 	pop(@$array);
 
-
 	$self->trickledown($index);
-
-
 
 	return $obj;
     }
@@ -168,7 +166,9 @@ sub remove
 ############################################################
 #
 # min
-# 
+#
+# my $min_obj = $mm_heap->min(); 
+#
 # return the minimum object in heap
 #
 ############################################################
@@ -190,6 +190,8 @@ sub min
 ############################################################
 #
 # pop_min
+#
+# my $min_obj = $mm_heap->pop_min(); 
 # 
 # pop the minimum object from the heap and return it
 #
@@ -218,6 +220,8 @@ sub pop_min
 ############################################################
 #
 # min_non_zero
+#
+# my $min_obj = $mm_heap->min_no_zero(); 
 # 
 # get minimum, non-zero valued object from the heap 
 # and return it.   This only makes sense if you have an 
@@ -266,6 +270,8 @@ sub min_non_zero # the smallest non-zero element
 #
 # pop_min_non_zero
 # 
+# my $min_obj = $mm_heap->pop_min_no_zero(); 
+#
 # pop the minimum, non-zero valued object from the heap 
 # and return it.   This only makes sense if you have an 
 # evaluation function that can return 0.
@@ -278,7 +284,6 @@ sub pop_min_non_zero # pop the smallest non-zero element
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};    
     my $index = 0;
-
 
     #array is empty
     if(!$arr_length){
@@ -315,6 +320,8 @@ sub pop_min_non_zero # pop the smallest non-zero element
 ############################################################
 #
 # max
+#
+# my $max_obj = $mm_heap->max();
 # 
 # get maximum object in the heap and return it
 #
@@ -325,7 +332,6 @@ sub max
     my $array = $self->{_arr};
     my $arr_length = @$array;
     my $evalfunc = $self->{feval};  
-
 
     #array is empty
     if(!$arr_length){
@@ -346,7 +352,6 @@ sub max
     my $max_index = ($result >= 0) ? 1 : 2;
     my $top = $array->[$max_index];  
 
-
     return $top;
 }
 
@@ -355,6 +360,8 @@ sub max
 ############################################################
 #
 # pop_max
+#
+# my $max_obj = $mm_heap->pop_max();
 # 
 # pop the maximum object from the heap and return it
 #
@@ -615,7 +622,6 @@ sub bubble_up_max
 sub swap
 {
     my ($self, $m, $index) = @_;
-
     my $array = $self->{_arr};
     
     if($m <  @$array && $index <  @$array){
@@ -702,12 +708,10 @@ sub get_smallest_descendant_index
 		$min_descendant = $descendants{$key};
 		$index = $key;
 	    }	    
-	}
-      
+	}      
 	return $index;	
     }
  
-
     return;
 }
 
@@ -1006,6 +1010,17 @@ sub get_level
     return int($log);
 }
 
+
+
+############################################################
+#
+# print
+#
+# $mm_heap->print();
+# 
+# Dump the contents of the heap to STDOUT
+#
+############################################################
 sub print{
     $_[0]->print_heap();    
 }
@@ -1017,6 +1032,10 @@ sub print_heap{
 
     my $i = 0;
     foreach my $elt (@$array){
+	my $val = $eval_func->($elt);
+	if(!$val){
+	    croak "Error:  evaluation function provided to Heap::MinMax object returned null\n";
+	}
 	print $eval_func->($elt) . "\n";
 	$i++;
     }
@@ -1217,6 +1236,11 @@ sometimes you gotta do what you gotta do.
 Returns the minimum value/object stored in the heap.
 
 
+=head2 min_non_zero()
+
+ my $min_non_zero_thing = $mm_heap->min_non_zero();
+
+Returns the minimum non-zero value/object stored in the heap.
 
 
 
@@ -1237,6 +1261,11 @@ Returns the maximum value/object stored in the heap.
 Removes and returns the minimum value/object stored in the heap.
 
 
+=head2 pop_min_non_zero()
+
+ my $min_non_zero_thing = $mm_heap->pop_min_non_zero();
+
+Removes and returns the minimum non-zero value/object stored in the heap.
 
 
 
@@ -1266,6 +1295,10 @@ Returns the number of elements currently in the heap.
 
 Dumps the contents of the heap to STDOUT.
 
+
+=head1 DEPENDENCIES
+
+Test::More (for installation and testing).
 
 
 
