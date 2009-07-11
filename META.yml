@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Heap-MinMax
-version:             1.01
+version:             1.02
 abstract:            Min-Max Heap for Priority Queues etc.
 license:             ~
 author:              
