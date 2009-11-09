@@ -22,7 +22,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 
 
@@ -102,7 +102,7 @@ sub insert
     my ($self,
 	@values) = @_;
     
-    while(my $val = shift(@values)){	
+    while(defined(my $val = shift(@values))){	
 	my $array = $self->{_arr};	
 	push(@$array, $val); # put the new element in the next available leaf slot	
 	my $arr_length = @$array;
@@ -1033,7 +1033,7 @@ sub print_heap{
     my $i = 0;
     foreach my $elt (@$array){
 	my $val = $eval_func->($elt);
-	if(!$val){
+	if(!defined($val)){
 	    croak "Error:  evaluation function provided to Heap::MinMax object returned null\n";
 	}
 	print $eval_func->($elt) . "\n";
