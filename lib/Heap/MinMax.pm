@@ -22,7 +22,7 @@ use strict;
 use warnings;
 
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 
 
@@ -410,9 +410,9 @@ sub pop_max
 
 ############################################################
 #
-# trickledown_min is alled during heap construction.   it
+# trickledown() is called during heap construction.   it
 # determines whether current level is a min-level or max-level, 
-# and calls the appropriate TrickleDown function.
+# and calls the appropriate trickledown{min,max}() function.
 #
 ############################################################
 sub trickledown
@@ -439,14 +439,14 @@ sub trickledown
 
 ############################################################
 #
-# trickledown_min is alled during heap construction when examining 
+# trickledown_min is called during heap construction when examining 
 # a subtree rooted at an even level.  Compares the values of the root 
 # node with the smallest of its children and grand-children.
 # if the root node is larger, the values are swapped and the
 # function recurses.
 #
 #
-# Note: this function is *very* similar to trickle_down_max, but 
+# Note: this function is very similar to trickle_down_max, but 
 # they are kept separate for purposes of readability.
 #
 ############################################################
@@ -481,14 +481,14 @@ sub trickledown_min
 
 ############################################################
 #
-# trickledown_min is called during heap construction when examining 
+# trickledown_max is called during heap construction when examining 
 # a subtree rooted at an odd level.  Compares the values of the root 
 # node with the largest of its children and grand-children.
 # if the root node is smaller, the values are swapped and the
 # function recurses.
 #
 #
-# Note: this function is *very* similar to trickle_down_min, but 
+# Note: this function is very similar to trickle_down_min, but 
 # they are kept separate for purposes of readability.
 #
 ############################################################
@@ -616,7 +616,7 @@ sub bubble_up_max
 
 ############################################################
 #
-# swap to elements in the array
+# swap two elements in the array
 #
 ############################################################
 sub swap
